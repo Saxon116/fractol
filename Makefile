@@ -6,7 +6,7 @@
 #    By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/13 12:50:22 by nkellum           #+#    #+#              #
-#    Updated: 2019/04/29 15:21:25 by nkellum          ###   ########.fr        #
+#    Updated: 2019/04/29 17:27:53 by nkellum          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ $(NAME): $(SRC)
 	@ make -C minilibx_macos
 	@cc -o $(NAME) -I /usr/local/include $(SRC) -L ./minilibx_macos -lmlx \
 	-lm -framework OpenGL -framework AppKit libft/libft.a
-	@echo "${_GREEN}Compiled fdf${_END}"
+	@echo "${_GREEN}Compiled fractol${_END}"
 
 linux: $(SRC)
 	@ make -C libft
