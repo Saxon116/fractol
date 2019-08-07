@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 17:29:43 by nkellum           #+#    #+#             */
-/*   Updated: 2019/04/29 17:17:23 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/07 20:46:39 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,90 @@ void	plot(int x, int y, t_mlx *mlx, int iteration)
 	mlx->img_str[index + 2] = (char)10*iteration;
 }
 
+void plot_center(t_mlx *mlx)
+{
+	plot(299, 299, mlx, 0);
+	plot(300, 299, mlx, 0);
+	plot(301, 299, mlx, 0);
+	plot(299, 300, mlx, 0);
+	plot(300, 300, mlx, 0);
+	plot(301, 300, mlx, 0);
+	plot(299, 301, mlx, 0);
+	plot(300, 301, mlx, 0);
+	plot(301, 301, mlx, 0);
+}
+
+void redraw(t_mlx *mlx)
+{
+	mlx_destroy_image(mlx->mlx_ptr, mlx->img_ptr);
+	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
+	mandelbrot(mlx);
+	mlx->img_str =  mlx_get_data_addr(mlx->img_ptr,
+		&(mlx->bpp), &(mlx->size_line), &(mlx->endian));
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
+}
+
 int deal_key(int key, void *param)
 {
-  t_mlx *mlx;
-  double direction;
+	t_mlx *mlx;
+	double direction;
 
-  direction = 0;
-  mlx = (t_mlx *) param;
+	direction = 0;
+	double offset = 0.1;
+	mlx = (t_mlx *) param;
+	//printf("key %d\n", key);
 
-  if(key == 53 || key == 65307)
-      exit(0);
-  return (0);
+	if(key == 53 || key == 65307)
+		exit(0);
+	if(key == 24)
+	{
+		mlx->zoom += offset;
+		mlx->horiz += 0.2;
+		mlx->vert += 0.2;
+		printf("zoom: %f vert: %f\n", mlx->zoom, mlx->vert);
+		redraw(mlx);
+	}
+	if(key == 27)
+	{
+		mlx->zoom -= offset;
+		mlx->horiz -= 0.2;
+		mlx->vert -= 0.2;
+		redraw(mlx);
+	}
+	if(key == 53 || key == 65307)
+		exit(0);
+	if(key == 123) // LEFT
+	{
+		mlx->horiz -= offset;
+		redraw(mlx);
+	}
+	if(key == 124) // RIGHT
+	{
+		mlx->horiz += offset;
+		redraw(mlx);
+	}
+	if(key == 126) // UP
+	{
+		mlx->horiz -= offset;
+		redraw(mlx);
+	}
+	if(key == 125) // DOWN
+	{
+		mlx->vert += offset;
+		redraw(mlx);
+	}
+	return (0);
 }
+
 
 
 
 void initialize_mlx(t_mlx *mlx)
 {
 	mlx->mlx_ptr = mlx_init();
+	mlx->zoom = 1;
+	mlx->horiz = 0;
+	mlx->vert = 0;
 	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, 600, 600, "Fractol");
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
 	mlx->img_str =  mlx_get_data_addr(mlx->img_ptr, &(mlx->bpp),
@@ -61,42 +127,7 @@ int main(int argc, char **argv)
 	initialize_mlx(mlx);
 
 
-	double x0 = -2.5;
-	double y0 = -1.0;
-	int p_x;
-	int p_y = 0;
-	int iteration = 0;
-	int max_iteration = 100;
-	double xtemp = 0;
-	double x = 0.0;
-	double y = 0.0;
-
-	while(p_y < 600)
-	{
-		p_x = 0;
-		while(p_x < 600)
-		{
-			x0 = map(p_x, 0, 500, -2, 1);
-			y0 = map(p_y, 0, 400, -1, 1);
-			//printf("x is %d and map is %f\n", p_x, x0);
-			x = 0.0;
-			y = 0.0;
-			iteration = 0;
-			while (x * x + y * y <= 2 * 2  &&  iteration < max_iteration) {
-		      xtemp = x * x - y * y + x0;
-		      y = 2 * x * y + y0;
-		      x = xtemp;
-		      iteration++;
-		    }
-			plot(p_x, p_y, mlx, iteration);
-			p_x++;
-		}
-		//printf("y is %d and map is %f\n", p_y, y0);
-		p_y++;
-	}
-
-
-
+	mandelbrot(mlx);
 
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
 	mlx_hook(mlx->win_ptr, 2, 0, deal_key, mlx);
