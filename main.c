@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 17:29:43 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/07 20:46:39 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/16 16:43:30 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,27 @@ int deal_key(int key, void *param)
 
 	if(key == 53 || key == 65307)
 		exit(0);
-	if(key == 24)
+	if(key == 15) // RESET with 'r'
 	{
-		mlx->zoom += offset;
-		mlx->horiz += 0.2;
-		mlx->vert += 0.2;
-		printf("zoom: %f vert: %f\n", mlx->zoom, mlx->vert);
+		mlx->zoom = 1;
+		mlx->horiz = 0;
+		mlx->vert = 0;
 		redraw(mlx);
 	}
-	if(key == 27)
+	if(key == 24 || key == 69)
 	{
-		mlx->zoom -= offset;
-		mlx->horiz -= 0.2;
-		mlx->vert -= 0.2;
+		mlx->zoom += 0.1;
+		// mlx->horiz += mlx->offset;
+		// mlx->vert += mlx->offset;
+		//printf("zoom: %f vert: %f offset: %f\n", mlx->zoom, mlx->vert, mlx->offset);
+		redraw(mlx);
+	}
+	if(key == 27 || key == 76)
+	{
+		mlx->zoom -= 0.1;
+		// mlx->horiz -= mlx->offset;
+		// mlx->vert -= mlx->offset;
+		//printf("zoom: %f vert: %f offset: %f\n", mlx->zoom, mlx->vert, mlx->offset);
 		redraw(mlx);
 	}
 	if(key == 53 || key == 65307)
@@ -86,7 +94,7 @@ int deal_key(int key, void *param)
 	}
 	if(key == 126) // UP
 	{
-		mlx->horiz -= offset;
+		mlx->vert -= offset;
 		redraw(mlx);
 	}
 	if(key == 125) // DOWN
@@ -103,6 +111,7 @@ int deal_key(int key, void *param)
 void initialize_mlx(t_mlx *mlx)
 {
 	mlx->mlx_ptr = mlx_init();
+	mlx->offset = 0.1;
 	mlx->zoom = 1;
 	mlx->horiz = 0;
 	mlx->vert = 0;

@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/22 16:31:29 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/07 14:56:36 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/16 14:01:07 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct	s_mlx
 	int 		bpp;
 	int 		size_line;
 	int 		endian;
+	double		offset;
 	double		horiz;
 	double		vert;
 	double		zoom;
