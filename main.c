@@ -6,33 +6,38 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 17:29:43 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/16 16:43:30 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/17 20:54:59 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+
+/*
+	Cool colors:
+	226 237 185
+*/
 
 void	plot(int x, int y, t_mlx *mlx, int iteration)
 {
 	int index;
 
 	index = 4 * (y * 600) + 4 * x;
-	mlx->img_str[index] = (char)243*iteration;
-	mlx->img_str[index + 1] = (char)100*iteration;
-	mlx->img_str[index + 2] = (char)10*iteration;
+	mlx->img_str[index] = (char)226*iteration;
+	mlx->img_str[index + 1] = (char)237*iteration;
+	mlx->img_str[index + 2] = (char)185*iteration;
 }
 
-void plot_center(t_mlx *mlx)
+void plot_point(t_mlx *mlx, int x, int y)
 {
-	plot(299, 299, mlx, 0);
-	plot(300, 299, mlx, 0);
-	plot(301, 299, mlx, 0);
-	plot(299, 300, mlx, 0);
-	plot(300, 300, mlx, 0);
-	plot(301, 300, mlx, 0);
-	plot(299, 301, mlx, 0);
-	plot(300, 301, mlx, 0);
-	plot(301, 301, mlx, 0);
+	plot(x - 1, y - 1, mlx, 0);
+	plot(x, y - 1, mlx, 0);
+	plot(x + 1, y - 1, mlx, 0);
+	plot(x - 1, y, mlx, 0);
+	plot(x, y, mlx, 0);
+	plot(x + 1, y, mlx, 0);
+	plot(x - 1, y + 1, mlx, 0);
+	plot(x, y + 1, mlx, 0);
+	plot(x + 1, y + 1, mlx, 0);
 }
 
 void redraw(t_mlx *mlx)
@@ -40,6 +45,8 @@ void redraw(t_mlx *mlx)
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img_ptr);
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
 	mandelbrot(mlx);
+	// plot_point(mlx, 300, 300);
+	// plot_point(mlx, 0, 300);
 	mlx->img_str =  mlx_get_data_addr(mlx->img_ptr,
 		&(mlx->bpp), &(mlx->size_line), &(mlx->endian));
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
@@ -51,7 +58,7 @@ int deal_key(int key, void *param)
 	double direction;
 
 	direction = 0;
-	double offset = 0.1;
+	double offset = 0.001;
 	mlx = (t_mlx *) param;
 	//printf("key %d\n", key);
 
@@ -64,20 +71,41 @@ int deal_key(int key, void *param)
 		mlx->vert = 0;
 		redraw(mlx);
 	}
-	if(key == 24 || key == 69)
+	if(key == 69)
 	{
-		mlx->zoom += 0.1;
-		// mlx->horiz += mlx->offset;
-		// mlx->vert += mlx->offset;
-		//printf("zoom: %f vert: %f offset: %f\n", mlx->zoom, mlx->vert, mlx->offset);
+		mlx->vert = 0;
 		redraw(mlx);
 	}
-	if(key == 27 || key == 76)
+	if(key == 8) // print colors with with 'c'
+		printf("r: %d g: %d b: %d\n", mlx->r, mlx->g, mlx->b);
+	if(key == 24 || key == 69)
 	{
-		mlx->zoom -= 0.1;
-		// mlx->horiz -= mlx->offset;
-		// mlx->vert -= mlx->offset;
-		//printf("zoom: %f vert: %f offset: %f\n", mlx->zoom, mlx->vert, mlx->offset);
+		mlx->zoom *= 2;
+		if(mlx->zoom == 2)
+			mlx->oldvert = 0;
+		if(mlx->zoom == 4)
+			mlx->oldvert = 0.375;
+		if(mlx->zoom > 4)
+			mlx->oldvert /= 2;
+		if(mlx->zoom == 2)
+			mlx->vert += 0.75;
+		else
+			mlx->vert += mlx->oldvert;
+		mlx->horiz_last = 1;
+		redraw(mlx);
+	}
+	if((key == 27 || key == 76) && mlx->zoom > 1)
+	{
+		mlx->zoom /= 2;
+		if(mlx->zoom == 2)
+			mlx->oldvert = 0.375;
+		if(mlx->zoom >= 4 && !mlx->horiz_last)
+			mlx->oldvert *= 2;
+		if(mlx->zoom == 1)
+			mlx->vert -= 0.75;
+		else
+			mlx->vert -= mlx->oldvert;
+		mlx->horiz_last = 0;
 		redraw(mlx);
 	}
 	if(key == 53 || key == 65307)
@@ -102,6 +130,7 @@ int deal_key(int key, void *param)
 		mlx->vert += offset;
 		redraw(mlx);
 	}
+	//printf("zoom: %f vert: %f offset: %f\n", mlx->zoom, mlx->vert, mlx->offset);
 	return (0);
 }
 
@@ -114,7 +143,9 @@ void initialize_mlx(t_mlx *mlx)
 	mlx->offset = 0.1;
 	mlx->zoom = 1;
 	mlx->horiz = 0;
+	mlx->horiz_last = 0;
 	mlx->vert = 0;
+	mlx->oldvert = 0;
 	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, 600, 600, "Fractol");
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
 	mlx->img_str =  mlx_get_data_addr(mlx->img_ptr, &(mlx->bpp),
