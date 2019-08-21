@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/22 16:31:29 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/21 11:29:04 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/21 14:44:45 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ void			plot(int x, int y, t_mlx *mlx, int iteration);
 float			map(double val, double start1, double stop1,
 	double start2, double stop2);
 void plot_point(t_mlx *mlx, int x, int y);
+void redraw(t_mlx *mlx);
+void zoom_in(t_mlx *mlx);
+void zoom_out(t_mlx *mlx);
+
+
 
 
 

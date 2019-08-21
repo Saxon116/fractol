@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 17:29:43 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/21 12:46:09 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/21 15:49:59 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,38 @@ void draw_cross(t_mlx *mlx)
 	}
 }
 
+
+int mouse_pressed(int button, int x, int y, void *param)
+{
+	t_mlx *mlx;
+
+	mlx = (t_mlx *) param;
+	if(button == 4) // scroll in
+	{
+		if(x >= 300)
+			mlx->horiz += (0.00583333 / mlx->zoom) * (x - 300);
+		else
+			mlx->horiz -= (300 - x) * 0.00583333 / mlx->zoom;
+		if(y >= 300)
+			mlx->vert += (0.005 / mlx->zoom) * (y - 300);
+		else
+			mlx->vert -= (300 - y) * (0.005 / mlx->zoom);
+		zoom_in(mlx);
+	}
+	if(button == 5 && mlx->zoom > 1) // scroll out
+	{
+		zoom_out(mlx);
+	}
+	//printf("mouse button %d pressed at %d %d\n", button, x, y);
+	return 1;
+}
+
+int	mouse_moved(int x, int y, void *param)
+{
+	return 1;
+}
+
+
 void redraw(t_mlx *mlx)
 {
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img_ptr);
@@ -63,7 +95,7 @@ void redraw(t_mlx *mlx)
 	mandelbrot(mlx);
 	// plot_point(mlx, 300, 300);
 	// plot_point(mlx, 0, 300);
-	draw_cross(mlx);
+	//draw_cross(mlx);
 	mlx->img_str =  mlx_get_data_addr(mlx->img_ptr,
 		&(mlx->bpp), &(mlx->size_line), &(mlx->endian));
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
@@ -97,55 +129,11 @@ int deal_key(int key, void *param)
 		printf("r: %d g: %d b: %d\n", mlx->r, mlx->g, mlx->b);
 	if(key == 24 || key == 69) // PLUS KEY
 	{
-		mlx->zoom *= 2;
-		if(mlx->zoom == 2)
-			mlx->oldvert = 0;
-		if(mlx->zoom == 4)
-			mlx->oldvert = 0.375;
-		if(mlx->zoom > 4 && mlx->vert_last)
-			mlx->oldvert /= 2;
-		if(mlx->zoom == 2)
-			mlx->vert += 0.75;
-		else
-			mlx->vert += mlx->oldvert;
-		mlx->vert_last = 1;
-
-		if(mlx->zoom == 2)
-			mlx->oldhoriz = 0;
-		if(mlx->zoom == 4)
-			mlx->oldhoriz = 0.43;
-		if(mlx->zoom > 4 && mlx->horiz_last)
-			mlx->oldhoriz /= 2;
-		if(mlx->zoom == 2)
-			mlx->horiz += 0.88;
-		else
-			mlx->horiz += mlx->oldhoriz;
-		mlx->horiz_last = 1;
-		redraw(mlx);
+		zoom_in(mlx);
 	}
 	if((key == 27 || key == 76) && mlx->zoom > 1) // MINUS KEY
 	{
-		mlx->zoom /= 2;
-		if(mlx->zoom == 2)
-			mlx->oldvert = 0.375;
-		if(mlx->zoom >= 4 && !mlx->vert_last)
-			mlx->oldvert *= 2;
-		if(mlx->zoom == 1)
-			mlx->vert -= 0.75;
-		else
-			mlx->vert -= mlx->oldvert;
-		mlx->vert_last = 0;
-
-		if(mlx->zoom == 2)
-			mlx->oldhoriz = 0.375;
-		if(mlx->zoom >= 4 && !mlx->horiz_last)
-			mlx->oldhoriz *= 2;
-		if(mlx->zoom == 1)
-			mlx->horiz -= 0.75;
-		else
-			mlx->horiz -= mlx->oldhoriz;
-		mlx->horiz_last = 0;
-		redraw(mlx);
+		zoom_out(mlx);
 	}
 	if(key == 53 || key == 65307)
 		exit(0);
@@ -169,7 +157,7 @@ int deal_key(int key, void *param)
 		mlx->vert += offset;
 		redraw(mlx);
 	}
-	//printf("zoom: %f vert: %f offset: %f\n", mlx->zoom, mlx->vert, mlx->offset);
+	//printf("zoom: %f vert: %f offset: %f\n", mlx->zoom, mlx->horiz, mlx->offset);
 	return (0);
 }
 
@@ -209,10 +197,12 @@ int main(int argc, char **argv)
 
 
 	mandelbrot(mlx);
-	draw_cross(mlx);
+	//draw_cross(mlx);
 
 
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
 	mlx_hook(mlx->win_ptr, 2, 0, deal_key, mlx);
+	mlx_hook(mlx->win_ptr, 4, 0, mouse_pressed, mlx);
+	mlx_hook(mlx->win_ptr, 6, 0, mouse_moved, mlx);
 	mlx_loop(mlx->mlx_ptr);
 }

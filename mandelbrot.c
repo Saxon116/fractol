@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 13:09:19 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/21 12:46:05 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/21 15:50:23 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void mandelbrot(t_mlx *mlx) {
 	int p_x;
 	int p_y = 0;
 	int iteration = 0;
-	int max_iteration = 20;
+	int max_iteration = 100;
 	double xtemp = 0;
 	double x = 0.0;
 	double y = 0.0;
