@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 17:29:43 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/21 15:49:59 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/21 17:17:05 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ void	plot(int x, int y, t_mlx *mlx, int iteration)
 	int index;
 
 	index = 4 * (y * 600) + 4 * x;
-	mlx->img_str[index] = (char)226*iteration;
-	mlx->img_str[index + 1] = (char)237*iteration;
-	mlx->img_str[index + 2] = (char)185*iteration;
+	mlx->img_str[index] = (char)mlx->r*iteration;
+	mlx->img_str[index + 1] = (char)mlx->g*iteration;
+	mlx->img_str[index + 2] = (char)mlx->b*iteration;
 }
 
 void plot_point(t_mlx *mlx, int x, int y)
@@ -62,7 +62,11 @@ int mouse_pressed(int button, int x, int y, void *param)
 	t_mlx *mlx;
 
 	mlx = (t_mlx *) param;
-	if(button == 4) // scroll in
+	if(button == 1)
+	{
+		mlx->frozen = mlx->frozen ? 0 : 1;
+	}
+	if(button == 4 && mlx->frozen) // scroll in
 	{
 		if(x >= 300)
 			mlx->horiz += (0.00583333 / mlx->zoom) * (x - 300);
@@ -74,16 +78,34 @@ int mouse_pressed(int button, int x, int y, void *param)
 			mlx->vert -= (300 - y) * (0.005 / mlx->zoom);
 		zoom_in(mlx);
 	}
-	if(button == 5 && mlx->zoom > 1) // scroll out
+	if(button == 5 && mlx->zoom > 1 && mlx->frozen) // scroll out
 	{
+		if(x >= 300)
+			mlx->horiz += (0.00583333 / mlx->zoom) * (x - 300);
+		else
+			mlx->horiz -= (300 - x) * 0.00583333 / mlx->zoom;
+		if(y >= 300)
+			mlx->vert += (0.005 / mlx->zoom) * (y - 300);
+		else
+			mlx->vert -= (300 - y) * (0.005 / mlx->zoom);
 		zoom_out(mlx);
 	}
-	//printf("mouse button %d pressed at %d %d\n", button, x, y);
+
+	// printf("mouse button %d pressed at %d %d\n", button, x, y);
 	return 1;
 }
 
 int	mouse_moved(int x, int y, void *param)
 {
+	t_mlx *mlx;
+
+	mlx = (t_mlx *) param;
+	if(!mlx->frozen)
+	{
+		mlx->cx = map(x, 0, 600, -1, 1);
+		mlx->cy = map(y, 0, 600, -1, 1);
+		redraw(mlx);
+	}
 	return 1;
 }
 
@@ -92,10 +114,11 @@ void redraw(t_mlx *mlx)
 {
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img_ptr);
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
-	mandelbrot(mlx);
+	julia(mlx);
 	// plot_point(mlx, 300, 300);
 	// plot_point(mlx, 0, 300);
 	//draw_cross(mlx);
+
 	mlx->img_str =  mlx_get_data_addr(mlx->img_ptr,
 		&(mlx->bpp), &(mlx->size_line), &(mlx->endian));
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
@@ -126,14 +149,12 @@ int deal_key(int key, void *param)
 		redraw(mlx);
 	}
 	if(key == 8) // print colors with with 'c'
-		printf("r: %d g: %d b: %d\n", mlx->r, mlx->g, mlx->b);
-	if(key == 24 || key == 69) // PLUS KEY
 	{
-		zoom_in(mlx);
-	}
-	if((key == 27 || key == 76) && mlx->zoom > 1) // MINUS KEY
-	{
-		zoom_out(mlx);
+		srand(time(NULL));
+		mlx->r = rand() % 255;
+		mlx->g = rand() % 255;
+		mlx->b = rand() % 255;
+		redraw(mlx);
 	}
 	if(key == 53 || key == 65307)
 		exit(0);
@@ -157,7 +178,7 @@ int deal_key(int key, void *param)
 		mlx->vert += offset;
 		redraw(mlx);
 	}
-	//printf("zoom: %f vert: %f offset: %f\n", mlx->zoom, mlx->horiz, mlx->offset);
+	// printf("zoom: %f vert: %f horiz: %f\n", mlx->zoom, mlx->vert, mlx->horiz);
 	return (0);
 }
 
@@ -166,6 +187,10 @@ int deal_key(int key, void *param)
 
 void initialize_mlx(t_mlx *mlx)
 {
+	srand(time(NULL));
+	mlx->r = 226;
+	mlx->g = 237;
+	mlx->b = 185;
 	mlx->mlx_ptr = mlx_init();
 	mlx->offset = 0.1;
 	mlx->zoom = 1;
@@ -175,6 +200,9 @@ void initialize_mlx(t_mlx *mlx)
 	mlx->oldvert = 0;
 	mlx->vert_last = 0;
 	mlx->oldhoriz = 0;
+	mlx->cx = 0.0;
+	mlx->cy = 0.0;
+	mlx->frozen = 0;
 	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, 600, 600, "Fractol");
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
 	mlx->img_str =  mlx_get_data_addr(mlx->img_ptr, &(mlx->bpp),
@@ -196,7 +224,7 @@ int main(int argc, char **argv)
 	initialize_mlx(mlx);
 
 
-	mandelbrot(mlx);
+	julia(mlx);
 	//draw_cross(mlx);
 
 

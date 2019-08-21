@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/22 16:31:29 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/21 14:44:45 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/21 16:30:26 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,15 @@ typedef struct	s_mlx
 	int			b;
 	int			horiz_last;
 	int			vert_last;
+	int			frozen;
 	double		offset;
 	double		horiz;
 	double		vert;
 	double		oldvert;
 	double		oldhoriz;
 	double		zoom;
+	double		cx;
+	double		cy;
 }				t_mlx;
 
 void			mandelbrot(t_mlx *mlx);
@@ -54,6 +57,7 @@ void plot_point(t_mlx *mlx, int x, int y);
 void redraw(t_mlx *mlx);
 void zoom_in(t_mlx *mlx);
 void zoom_out(t_mlx *mlx);
+void julia(t_mlx *mlx);
 
 
 
