@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/22 16:31:29 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/17 20:50:38 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/21 11:29:04 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,12 @@ typedef struct	s_mlx
 	int			g;
 	int			b;
 	int			horiz_last;
+	int			vert_last;
 	double		offset;
 	double		horiz;
 	double		vert;
 	double		oldvert;
+	double		oldhoriz;
 	double		zoom;
 }				t_mlx;
 
