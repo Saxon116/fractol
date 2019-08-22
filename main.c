@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 17:29:43 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/21 17:17:05 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/22 15:18:47 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,6 @@ void	plot(int x, int y, t_mlx *mlx, int iteration)
 	mlx->img_str[index + 2] = (char)mlx->b*iteration;
 }
 
-void plot_point(t_mlx *mlx, int x, int y)
-{
-	plot(x - 1, y - 1, mlx, 0);
-	plot(x, y - 1, mlx, 0);
-	plot(x + 1, y - 1, mlx, 0);
-	plot(x - 1, y, mlx, 0);
-	plot(x, y, mlx, 0);
-	plot(x + 1, y, mlx, 0);
-	plot(x - 1, y + 1, mlx, 0);
-	plot(x, y + 1, mlx, 0);
-	plot(x + 1, y + 1, mlx, 0);
-}
-
 void draw_cross(t_mlx *mlx)
 {
 	int i = 0;
@@ -53,6 +40,25 @@ void draw_cross(t_mlx *mlx)
 	{
 		plot(300, i, mlx, 0);
 		i++;
+	}
+}
+
+void fill_background(t_mlx *mlx)
+{
+	int x;
+	int y;
+
+	x = 0;
+	y = 0;
+	while(y < 600)
+	{
+		x = 0;
+		while(x < 600)
+		{
+			plot(x, y, mlx, 1);
+			x++;
+		}
+		y++;
 	}
 }
 
@@ -114,7 +120,8 @@ void redraw(t_mlx *mlx)
 {
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img_ptr);
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
-	julia(mlx);
+	fill_background(mlx);
+	burning_ship(mlx);
 	// plot_point(mlx, 300, 300);
 	// plot_point(mlx, 0, 300);
 	//draw_cross(mlx);
@@ -130,17 +137,31 @@ int deal_key(int key, void *param)
 	double direction;
 
 	direction = 0;
-	double offset = 0.01;
+	double offset = 0.3;
 	mlx = (t_mlx *) param;
-	//printf("key %d\n", key);
+	// printf("key %d\n", key);
 
+	if(key == 24) // '-' key (+)
+	{
+		mlx->max_iteration += 10;
+		redraw(mlx);
+	}
+	if(key == 27) // '=' key (-)
+	{
+		mlx->max_iteration += 10;
+		redraw(mlx);
+	}
 	if(key == 53 || key == 65307)
 		exit(0);
 	if(key == 15) // RESET with 'r'
 	{
-		mlx->zoom = 1;
+		mlx->zoom = 1.0;
 		mlx->horiz = 0;
 		mlx->vert = 0;
+		mlx->r = 226;
+		mlx->g = 237;
+		mlx->b = 185;
+		mlx->max_iteration = 100;
 		redraw(mlx);
 	}
 	if(key == 69)
@@ -160,46 +181,49 @@ int deal_key(int key, void *param)
 		exit(0);
 	if(key == 123) // LEFT
 	{
-		mlx->horiz -= offset;
+		mlx->horiz -= offset / mlx->zoom;
 		redraw(mlx);
 	}
 	if(key == 124) // RIGHT
 	{
-		mlx->horiz += offset;
+		mlx->horiz += offset / mlx->zoom;
 		redraw(mlx);
 	}
 	if(key == 126) // UP
 	{
-		mlx->vert -= offset;
+		mlx->vert -= offset / mlx->zoom;
 		redraw(mlx);
 	}
 	if(key == 125) // DOWN
 	{
-		mlx->vert += offset;
+		mlx->vert += offset / mlx->zoom;
 		redraw(mlx);
 	}
 	// printf("zoom: %f vert: %f horiz: %f\n", mlx->zoom, mlx->vert, mlx->horiz);
 	return (0);
 }
 
-
-
+int	win_close(void *param)
+{
+	(void)param;
+	exit(0);
+}
 
 void initialize_mlx(t_mlx *mlx)
 {
-	srand(time(NULL));
 	mlx->r = 226;
 	mlx->g = 237;
 	mlx->b = 185;
 	mlx->mlx_ptr = mlx_init();
 	mlx->offset = 0.1;
-	mlx->zoom = 1;
+	mlx->zoom = 1.0;
 	mlx->horiz = 0;
 	mlx->horiz_last = 0;
 	mlx->vert = 0;
 	mlx->oldvert = 0;
 	mlx->vert_last = 0;
 	mlx->oldhoriz = 0;
+	mlx->max_iteration = 100;
 	mlx->cx = 0.0;
 	mlx->cy = 0.0;
 	mlx->frozen = 0;
@@ -222,15 +246,16 @@ int main(int argc, char **argv)
 	if((mlx = malloc(sizeof(t_mlx))) == NULL)
     	return (0);
 	initialize_mlx(mlx);
+	fill_background(mlx);
 
-
-	julia(mlx);
+	burning_ship(mlx);
 	//draw_cross(mlx);
 
 
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
 	mlx_hook(mlx->win_ptr, 2, 0, deal_key, mlx);
 	mlx_hook(mlx->win_ptr, 4, 0, mouse_pressed, mlx);
+	mlx_hook(mlx->win_ptr, 17, 0, win_close, mlx);
 	mlx_hook(mlx->win_ptr, 6, 0, mouse_moved, mlx);
 	mlx_loop(mlx->mlx_ptr);
 }

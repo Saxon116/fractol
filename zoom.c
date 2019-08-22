@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/21 14:42:39 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/21 14:45:36 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/22 15:14:41 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 void zoom_in(t_mlx *mlx)
 {
-	mlx->zoom *= 2;
+	mlx->zoom *= 2.0;
 	if(mlx->zoom == 2)
 		mlx->oldvert = 0;
 	if(mlx->zoom == 4)
 		mlx->oldvert = 0.375;
 	if(mlx->zoom > 4 && mlx->vert_last)
-		mlx->oldvert /= 2;
+		mlx->oldvert /= 2.0;
 	if(mlx->zoom == 2)
 		mlx->vert += 0.75;
 	else
@@ -32,7 +32,7 @@ void zoom_in(t_mlx *mlx)
 	if(mlx->zoom == 4)
 		mlx->oldhoriz = 0.44;
 	if(mlx->zoom > 4 && mlx->horiz_last)
-		mlx->oldhoriz /= 2;
+		mlx->oldhoriz /= 2.0;
 	if(mlx->zoom == 2)
 		mlx->horiz += 0.87;
 	else
@@ -43,11 +43,11 @@ void zoom_in(t_mlx *mlx)
 
 void zoom_out(t_mlx *mlx)
 {
-	mlx->zoom /= 2;
+	mlx->zoom /= 2.0;
 	if(mlx->zoom == 2)
 		mlx->oldvert = 0.375;
 	if(mlx->zoom >= 4 && !mlx->vert_last)
-		mlx->oldvert *= 2;
+		mlx->oldvert *= 2.0;
 	if(mlx->zoom == 1)
 		mlx->vert -= 0.75;
 	else
@@ -57,7 +57,7 @@ void zoom_out(t_mlx *mlx)
 	if(mlx->zoom == 2)
 		mlx->oldhoriz = 0.44;
 	if(mlx->zoom >= 4 && !mlx->horiz_last)
-		mlx->oldhoriz *= 2;
+		mlx->oldhoriz *= 2.0;
 	if(mlx->zoom == 1)
 		mlx->horiz -= 0.87;
 	else
