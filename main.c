@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 17:29:43 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/22 15:18:47 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/22 16:40:08 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void redraw(t_mlx *mlx)
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img_ptr);
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
 	fill_background(mlx);
-	burning_ship(mlx);
+	julia(mlx);
 	// plot_point(mlx, 300, 300);
 	// plot_point(mlx, 0, 300);
 	//draw_cross(mlx);
@@ -233,7 +233,7 @@ void initialize_mlx(t_mlx *mlx)
 	&(mlx->size_line), &(mlx->endian));
 }
 
-float map(double val, double start1, double stop1, double start2, double stop2)
+double map(double val, double start1, double stop1, double start2, double stop2)
 {
 	return start2 + (stop2 - start2) * ((val - start1) / (stop1 - start1));
 }
@@ -248,7 +248,7 @@ int main(int argc, char **argv)
 	initialize_mlx(mlx);
 	fill_background(mlx);
 
-	burning_ship(mlx);
+	julia(mlx);
 	//draw_cross(mlx);
 
 
