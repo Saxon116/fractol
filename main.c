@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 17:29:43 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/22 16:40:08 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/22 20:30:58 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ void	plot(int x, int y, t_mlx *mlx, int iteration)
 	int index;
 
 	index = 4 * (y * 600) + 4 * x;
-	mlx->img_str[index] = (char)mlx->r*iteration;
-	mlx->img_str[index + 1] = (char)mlx->g*iteration;
-	mlx->img_str[index + 2] = (char)mlx->b*iteration;
+	mlx->img_str[index] = (char)mlx->r * iteration;
+	mlx->img_str[index + 1] = (char)mlx->g * iteration;
+	mlx->img_str[index + 2] = (char)mlx->b * iteration;
 }
 
 void draw_cross(t_mlx *mlx)
@@ -121,11 +121,14 @@ void redraw(t_mlx *mlx)
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img_ptr);
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, 600, 600);
 	fill_background(mlx);
-	julia(mlx);
-	// plot_point(mlx, 300, 300);
-	// plot_point(mlx, 0, 300);
-	//draw_cross(mlx);
-
+	if(mlx->fractal == 1)
+		mandelbrot(mlx);
+	if(mlx->fractal == 2)
+		julia(mlx);
+	if(mlx->fractal == 3)
+		burning_ship(mlx);
+	if(mlx->fractal == 4)
+		tricorn(mlx);
 	mlx->img_str =  mlx_get_data_addr(mlx->img_ptr,
 		&(mlx->bpp), &(mlx->size_line), &(mlx->endian));
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
@@ -139,8 +142,39 @@ int deal_key(int key, void *param)
 	direction = 0;
 	double offset = 0.3;
 	mlx = (t_mlx *) param;
-	// printf("key %d\n", key);
+	//printf("key %d\n", key);
 
+	if(key == 18) // 1 key
+	{
+		mlx->fractal = 1;
+		key = 15;
+		redraw(mlx);
+	}
+	if(key == 19) // 2 key
+	{
+		mlx->fractal = 2;
+		key = 15;
+		redraw(mlx);
+	}
+	if(key == 20) // 3 key
+	{
+		mlx->fractal = 3;
+		key = 15;
+		redraw(mlx);
+	}
+	if(key == 21) // 4 key
+	{
+		mlx->fractal = 4;
+		key = 15;
+		redraw(mlx);
+	}
+	if(key == 1) // s for one color
+	{
+		mlx->r = 1;
+		mlx->g = 1;
+		mlx->b = 1;
+		redraw(mlx);
+	}
 	if(key == 24) // '-' key (+)
 	{
 		mlx->max_iteration += 10;
@@ -224,6 +258,7 @@ void initialize_mlx(t_mlx *mlx)
 	mlx->vert_last = 0;
 	mlx->oldhoriz = 0;
 	mlx->max_iteration = 100;
+	mlx->fractal = 1;
 	mlx->cx = 0.0;
 	mlx->cy = 0.0;
 	mlx->frozen = 0;
@@ -248,9 +283,14 @@ int main(int argc, char **argv)
 	initialize_mlx(mlx);
 	fill_background(mlx);
 
-	julia(mlx);
-	//draw_cross(mlx);
-
+	if(mlx->fractal == 1)
+		mandelbrot(mlx);
+	if(mlx->fractal == 2)
+		julia(mlx);
+	if(mlx->fractal == 3)
+		burning_ship(mlx);
+	if(mlx->fractal == 4)
+		tricorn(mlx);
 
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_ptr, 0, 0);
 	mlx_hook(mlx->win_ptr, 2, 0, deal_key, mlx);

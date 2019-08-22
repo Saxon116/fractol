@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/21 14:42:39 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/22 15:14:41 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/22 17:38:56 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void zoom_in(t_mlx *mlx)
 	else
 		mlx->vert += mlx->oldvert;
 	mlx->vert_last = 1;
-
 	if(mlx->zoom == 2)
 		mlx->oldhoriz = 0;
 	if(mlx->zoom == 4)
@@ -53,7 +52,6 @@ void zoom_out(t_mlx *mlx)
 	else
 		mlx->vert -= mlx->oldvert;
 	mlx->vert_last = 0;
-
 	if(mlx->zoom == 2)
 		mlx->oldhoriz = 0.44;
 	if(mlx->zoom >= 4 && !mlx->horiz_last)

@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/22 16:31:29 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/22 16:36:59 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/08/22 19:58:46 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct	s_mlx
 	int			vert_last;
 	int			frozen;
 	int			max_iteration;
+	int			fractal;
 	double		offset;
 	double		horiz;
 	double		vert;
@@ -59,6 +60,8 @@ void zoom_in(t_mlx *mlx);
 void zoom_out(t_mlx *mlx);
 void julia(t_mlx *mlx);
 void burning_ship(t_mlx *mlx);
+void tricorn(t_mlx *mlx);
+
 
 
 
