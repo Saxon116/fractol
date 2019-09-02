@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/22 16:31:29 by nkellum           #+#    #+#             */
-/*   Updated: 2019/08/22 19:58:46 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/09/02 16:50:16 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,13 @@ void zoom_out(t_mlx *mlx);
 void julia(t_mlx *mlx);
 void burning_ship(t_mlx *mlx);
 void tricorn(t_mlx *mlx);
+void fill_background(t_mlx *mlx);
+int mouse_pressed(int button, int x, int y, void *param);
+int	mouse_moved(int x, int y, void *param);
+int deal_key(int key, void *param);
+int	win_close(void *param);
+void display_controls(t_mlx *mlx);
+
 
 
 
