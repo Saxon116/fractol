@@ -6,13 +6,13 @@
 #    By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/13 12:50:22 by nkellum           #+#    #+#              #
-#    Updated: 2019/09/02 15:57:50 by nkellum          ###   ########.fr        #
+#    Updated: 2019/09/04 16:02:54 by nkellum          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fractol
-SRC = main.c mandelbrot.c julia.c zoom.c burning_ship.c tricorn.c draw.c\
-mouse.c key.c
+SRC = src/main.c src/mandelbrot.c src/julia.c src/zoom.c src/burning_ship.c \
+src/tricorn.c src/draw.c src/mouse.c src/key.c src/init.c
 OBJ = $(SRC:.c=.o)
 
 # This is a minimal set of ANSI/VT100 color codes

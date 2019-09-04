@@ -1,18 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tricorn.c                                          :+:      :+:    :+:   */
+/*   burning_ship.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/22 18:11:05 by nkellum           #+#    #+#             */
-/*   Updated: 2019/09/02 14:40:11 by nkellum          ###   ########.fr       */
+/*   Created: 2019/08/22 12:46:09 by nkellum           #+#    #+#             */
+/*   Updated: 2019/09/04 16:43:39 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-void calc_tricorn(t_mlx *mlx, int p_x, int p_y, int iteration)
+/*
+** DESCRIPTION:
+** These two functions calculate and render the burning ship fractal.
+** Pseudocode was found on wikipedia.
+*/
+
+float	flt_abs(float f)
+{
+	if (f < 0.0)
+		return (-f);
+	return (f);
+}
+
+void	calc_burning_ship(t_mlx *mlx, int p_x, int p_y, int iteration)
 {
 	double zx;
 	double zy;
@@ -20,18 +33,19 @@ void calc_tricorn(t_mlx *mlx, int p_x, int p_y, int iteration)
 	double y;
 	double xtemp;
 
-	while(p_x < 600)
+	while (p_x < 600)
 	{
-		x = map(p_x, 0 , 600 * mlx->zoom, -2.5 , 1) + 0.6 + mlx->horiz;
-		y = map(p_y, 0 , 400 * mlx->zoom, -1, 1) - 0.4 + mlx->vert;
+		x = -2.5 + 3.5 * ((p_x - 0) / (600 * mlx->zoom - 0))
+		+ 0.35 + mlx->horiz;
+		y = -1 + 2 * ((p_y - 0) / (400 * mlx->zoom - 0)) - 0.8 + mlx->vert;
 		zx = x;
 		zy = y;
 		iteration = 1;
-		while (zx * zx + zy * zy < 4 &&  iteration < mlx->max_iteration)
+		while (zx * zx + zy * zy < 4 && iteration < mlx->max_iteration)
 		{
 			xtemp = zx * zx - zy * zy + x;
-			zy = -2 * zx * zy + y;
-			zx = xtemp;
+			zy = flt_abs(2 * zx * zy) + y;
+			zx = flt_abs(xtemp);
 			iteration++;
 		}
 		plot(p_x, p_y, mlx, iteration);
@@ -39,15 +53,14 @@ void calc_tricorn(t_mlx *mlx, int p_x, int p_y, int iteration)
 	}
 }
 
-void tricorn(t_mlx *mlx) {
-
+void	burning_ship(t_mlx *mlx)
+{
 	int p_y;
 
-
 	p_y = 0;
-	while(p_y < 600)
+	while (p_y < 600)
 	{
-		calc_tricorn(mlx, 0, p_y, 0);
+		calc_burning_ship(mlx, 0, p_y, 0);
 		p_y++;
 	}
 }
