@@ -6,7 +6,7 @@
 /*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 14:57:04 by nkellum           #+#    #+#             */
-/*   Updated: 2019/09/04 16:58:07 by nkellum          ###   ########.fr       */
+/*   Updated: 2019/09/10 12:15:07 by nkellum          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ int		check_args(int argc, char **argv)
 	fractal = -1;
 	if (argc != 2)
 	{
-		ft_putstr("usage: ./fractol [mandelbrot | julia | burningship |\
-		tricorn]\n");
+		ft_putstr("usage: ./fractol [mandelbrot | julia | burningship | \
+tricorn]\n");
 		exit(1);
 	}
 	if (ft_strcmp(argv[1], "mandelbrot") == 0)
@@ -40,8 +40,8 @@ int		check_args(int argc, char **argv)
 		return (3);
 	if (ft_strcmp(argv[1], "tricorn") == 0)
 		return (4);
-	ft_putstr("usage: ./fractol [mandelbrot | julia | burningship |\
-	tricorn]\n");
+	ft_putstr("usage: ./fractol [mandelbrot | julia | burningship | \
+tricorn]\n");
 	exit(1);
 }
 
