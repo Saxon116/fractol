@@ -5,11 +5,20 @@ To build: ```make```
 
 Usage: ```./fractol [mandelbrot | julia | burningship | tricorn]```
 
-Mandelbrot
 ![alt text](screenshots/mandelbrot.png)
-Julia
+
 ![alt text](screenshots/julia.png)
-Burning Ship
+
 ![alt text](screenshots/burningship.png)
-Tricorn
+
 ![alt text](screenshots/tricorn.png)
+
+![alt text](screenshots/greyscale1.png)
+
+![alt text](screenshots/greyscale2.png)
+
+![alt text](screenshots/greyscale3.png)
+
+![alt text](screenshots/zoomed1.png)
+
+![alt text](screenshots/zoomed2.png)
